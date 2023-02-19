@@ -1,17 +1,18 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+
 const config = require('./src/config/config');
-const userRoutes = require('./src/routes/userRoutes');
+const userRoute = require('./src/routes/userRoute');
+const authRoute = require('./routes/authRoute')
 
 const app = express();
 
-// Middleware to parse request body as JSON
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Routes
-app.use('/api', userRoutes);
+app.use('/api/auth', authRoute);
+app.use('/api', userRoute);
 
 // Start server
 app.listen(config.port, () => {
-  console.log(`Server listening on port ${config.port}`);
+  console.log(`Server running http://127.0.0.1:${config.port}`);
 });

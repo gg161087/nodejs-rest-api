@@ -17,7 +17,10 @@
   },
   "homepage": "https://github.com/gg161087/nodejs-rest-api#readme",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "express": "^4.18.2",
+    "express-jwt": "^8.4.1",
+    "jsonwebtoken": "^9.0.0",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.20"
   }
