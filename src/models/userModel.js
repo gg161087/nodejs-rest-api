@@ -4,10 +4,10 @@ const config = require('../config/config');
 // Create connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: config.database.host,
-  user: config.database.username,
-  password: config.database.password,
-  database: config.database.name
+  host: config.db.host,
+  user: config.db.username,
+  password: config.db.password,
+  database: config.db.name
 });
 
 // User model

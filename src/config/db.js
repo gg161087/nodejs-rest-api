@@ -2,14 +2,14 @@ const mysql = require('mysql');
 const { promisify } = require('util');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const config = require('./config');
 
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: process.env.MYSQL_HOST,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE
+  host: config.db.host,
+  user: config.db.user,
+  password: config.db.password,
+  database: config.db.database
 });
 
 const query = promisify(pool.query).bind(pool);
@@ -37,7 +37,12 @@ async function verifyPassword(user, password) {
 }
 
 async function generateToken(user) {
-  return jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+  const token = jwt.sign({
+    name: user.name,
+    id: user.id
+  }, config.jwt_secret)
+
+  return token;
 }
 
 module.exports = { createUser, getUserById, getUserByEmail, verifyPassword, generateToken };

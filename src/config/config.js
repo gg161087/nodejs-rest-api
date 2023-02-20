@@ -8,4 +8,5 @@ module.exports = {
         password: process.env.MYSQL_PASSWORD ||'',
         database: process.env.MYSQL_DATABAS ||'my_api',
       },
+    jwt_secret: process.env.JWT_SECRET || 'my_secret'
 };

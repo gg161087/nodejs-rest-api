@@ -2,14 +2,14 @@ const express = require('express');
 
 const config = require('./src/config/config');
 const userRoute = require('./src/routes/userRoute');
-const authRoute = require('./routes/authRoute')
+const authRoute = require('./src/routes/authRoute');
 
 const app = express();
 
 app.use(express.json());
 
 // Routes
-app.use('/api/auth', authRoute);
+app.use('/api', authRoute);
 app.use('/api', userRoute);
 
 // Start server
