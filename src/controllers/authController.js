@@ -1,7 +1,20 @@
-const User = require('../models/userModel');
-const db = require('../config/db');
+const connection = require('../config/database');
 const jwt = require('jsonwebtoken');
 
+async function login(req, res) {
+  try {
+    const { email, password } = req.body;    
+    const user = await connection.query("SELECT * from users WHERE email AND password = ?, ?", email, password);             
+    if (!user) return res.status(401).send('Email o contraseña incorrectos');
+    const token = jwt.sign(user);
+    res.send(token);   
+
+  } catch (error) {
+      res.status(500);
+      res.send(error.message);
+  }    
+};
+/*
 function login(req, res) {
   const { email, password } = req.body;
   const user = db.getUserByEmail(email);
@@ -11,7 +24,7 @@ function login(req, res) {
   const token = db.generateToken(user);
   res.send(token);
 }
-
+*/
 async function register(req, res) {
   const { name, email, password } = req.body;
   const existingUser = await User.findOne({ where: { email } });

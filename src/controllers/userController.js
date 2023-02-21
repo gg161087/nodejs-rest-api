@@ -1,4 +1,4 @@
-const db = require('../config/db');
+const connection = require('../config/database');
 
 module.exports = {
 
@@ -6,7 +6,7 @@ module.exports = {
     const { name, email, age } = req.body;
   
     try {
-      const result = await db('INSERT INTO users (name, email, age) VALUES (?, ?, ?)', [name, email, age]);
+      const result = await connection.query('INSERT INTO users (name, email, age) VALUES (?, ?, ?)', [name, email, age]);
       const user = { id: result.insertId, name, email, age };
       res.status(201).send(user);
     } catch (err) {
@@ -17,7 +17,7 @@ module.exports = {
   getUsers : async (req, res) => {  
   
     try {
-      const users = await db('SELECT * FROM users');
+      const users = await connection('SELECT * FROM users');
       if (users.length === 0) {
         return res.status(404).send('Users not found');
       }    
@@ -31,7 +31,7 @@ module.exports = {
     const { id } = req.params;
   
     try {
-      const users = await db('SELECT * FROM users WHERE id = ?', [id]);
+      const users = await connection('SELECT * FROM users WHERE id = ?', [id]);
       if (users.length === 0) {
         return res.status(404).send('User not found');
       }
@@ -47,7 +47,7 @@ module.exports = {
     const { name, email, age } = req.body;
   
     try {
-      const result = await db('UPDATE users SET name = ?, email = ?, age = ? WHERE id = ?', [name, email, age, id]);
+      const result = await connection('UPDATE users SET name = ?, email = ?, age = ? WHERE id = ?', [name, email, age, id]);
       if (result.affectedRows === 0) {
         return res.status(404).send('User not found');
       }
@@ -62,7 +62,7 @@ module.exports = {
     const { id } = req.params;
   
     try {
-      const result = await db('DELETE FROM users WHERE id = ?', [id]);
+      const result = await connection('DELETE FROM users WHERE id = ?', [id]);
       if (result.affectedRows === 0) {
         return res.status(404).send('User not found');
       }
