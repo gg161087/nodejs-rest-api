@@ -8,7 +8,7 @@ export default {
         host: process.env.MYSQL_HOST || 'localhost',
         user: process.env.MYSQL_USER || 'root',
         password: process.env.MYSQL_PASSWORD || '',
-        database: process.env.MYSQL_DATABASE || 'my_api',
+        database: process.env.MYSQL_DATABASE || 'gonzalo',
         port: process.env.MYSQL_PORT || 3306,
       },
     jwt_secret: process.env.JWT_SECRET || 'my_secret'

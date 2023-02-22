@@ -3,11 +3,10 @@ import jwt from "jsonwebtoken";
 
 const jwtMiddleware = (req, res, next) => {
   // obtener el token del encabezado de autorización
-  const token = req.headers.authorization?.split(' ')[1];
-  console.log(token);
+  const token = req.headers.authorization?.split(' ')[1];  
   // si no hay token, responder con un error
   if (!token) {
-    return res.status(401).json({ error: 'No se proporcionó un token de autenticación' });
+    return res.status(401).json({ error: 'No authentication token provided' });
   }
 
   try {
@@ -20,7 +19,7 @@ const jwtMiddleware = (req, res, next) => {
     next();
   } catch (err) {
     // si el token es inválido, responder con un error
-    res.status(401).json({ error: 'Token de autenticación inválido' });
+    res.status(401).json({ error: 'Invalid authentication token' });
   }
 };
 
