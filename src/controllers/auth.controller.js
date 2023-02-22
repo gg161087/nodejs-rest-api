@@ -1,17 +1,17 @@
-import { getConnection } from './../database/database';
+import { getConnection } from '../database/database';
 import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt';
 
-import config from './../config';
+import config from '../config';
 
 const login = async (req, res) => {
   try {
     const connection = await getConnection();
     const { email, password } = req.body;
 
-    const user = await connection.query("SELECT * from users WHERE email = ?", email);
+    const [user] = await connection.query("SELECT * from users WHERE email = ?", email);    
     if(user) {      
-      const validPassword = await bcrypt.compare(req.body.password, user[0].password);
+      const validPassword = await bcrypt.compare(password, user[0].password);
       if(validPassword){
         const payload = {check: true}                    
         const token = jwt.sign(payload, config.jwt_secret, {expiresIn: '1d'});
@@ -40,14 +40,14 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
   try {
-
+    const rol = 2;
     const { name, email } = req.body;
     const pwd = req.body.password;
     if (name === undefined || email === undefined || pwd === undefined){
       res.status(400).json({ message: 'Bad Request. Please fill all fields.' })
     }
     const password = await bcrypt.hash(pwd, 8);
-    const user = { name, email, password }
+    const user = { name, email, password, rol }
 
     const connection = await getConnection();
     const result = await connection.query('INSERT INTO users SET ?', user)
