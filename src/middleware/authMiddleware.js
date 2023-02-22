@@ -1,17 +1,27 @@
-const jwt = require('jsonwebtoken');
-const { User } = require('../models/userModel');
+import config from './../config';
+import jwt from "jsonwebtoken";
 
-async function auth(req, res, next) {
-  const token = req.header('Authorization').replace('Bearer ', '');
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findOne({ where: { id: decoded.id } });
-    if (!user) throw new Error();
-    req.user = user;
-    next();
-  } catch (e) {
-    res.status(401).send('No autorizado');
+const jwtMiddleware = (req, res, next) => {
+  // obtener el token del encabezado de autorización
+  const token = req.headers.authorization?.split(' ')[1];
+  console.log(token);
+  // si no hay token, responder con un error
+  if (!token) {
+    return res.status(401).json({ error: 'No se proporcionó un token de autenticación' });
   }
-}
 
-module.exports = { auth };
+  try {
+    // verificar el token y obtener el payload    
+    const payload = jwt.verify(token, config.jwt_secret);    
+    // agregar el ID del usuario al objeto de solicitud
+    req.id = payload.id;
+
+    // continuar con la siguiente función de middleware
+    next();
+  } catch (err) {
+    // si el token es inválido, responder con un error
+    res.status(401).json({ error: 'Token de autenticación inválido' });
+  }
+};
+
+module.exports = jwtMiddleware;

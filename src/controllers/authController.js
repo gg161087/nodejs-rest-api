@@ -1,26 +1,35 @@
 import { getConnection } from './../database/database';
+import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt';
-const jwt = require('jsonwebtoken');
 
 import config from './../config';
 
 const login = async (req, res) => {
   try {
     const connection = await getConnection();
-    const { email } = req.body;
-    const pwd = req.body.password;
-    const password = await bcrypt.hash(pwd, 8);
+    const { email, password } = req.body;
+
     const user = await connection.query("SELECT * from users WHERE email = ?", email);
-    if(user) {
-      const compare = bcrypt.compare(user.password, password);
-      if(compare){      
-      const token = jwt.sign(user, config.jwt_secret);
-      res.send(token);
+    if(user) {      
+      const validPassword = await bcrypt.compare(req.body.password, user[0].password);
+      if(validPassword){
+        const payload = {check: true}                    
+        const token = jwt.sign(payload, config.jwt_secret, {expiresIn: '1d'});
+        res.json({
+          success: true,
+          token: token
+        });
       }else{
-      res.json('Contraseña incorrecta');
+        res.json({
+          success: false,
+          message: 'Contraseña incorrecta'
+        });
       }
     } else {
-      res.status(401).send('Email incorrecto');
+      res.json({
+        success: false,
+        message: 'email incorrecta'
+      });
     } 
        
   } catch (error) {
