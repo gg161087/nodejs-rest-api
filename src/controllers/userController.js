@@ -1,37 +1,24 @@
-const connection = require('../config/database');
+import { getConnection } from './../database/database';
+import bcrypt from 'bcrypt';
 
-module.exports = {
+const getUsers = async (req, res) => {
+  try {
+    const connection = await getConnection();
+    const users = await connection.query('SELECT * FROM users');
+    if (users.length === 0) {
+      return res.status(404).send('Users not found');
+    }    
+    res.json(users);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
 
-  createUser : async (req, res) => {
-    const { name, email, age } = req.body;
-  
+const getUser = async (req, res) => {
+  const { id } = req.params;  
     try {
-      const result = await connection.query('INSERT INTO users (name, email, age) VALUES (?, ?, ?)', [name, email, age]);
-      const user = { id: result.insertId, name, email, age };
-      res.status(201).send(user);
-    } catch (err) {
-      res.status(400).send(err.message);
-    }
-  },
-  
-  getUsers : async (req, res) => {  
-  
-    try {
-      const users = await connection('SELECT * FROM users');
-      if (users.length === 0) {
-        return res.status(404).send('Users not found');
-      }    
-      res.send(users);
-    } catch (err) {
-      res.status(500).send(err.message);
-    }
-  },
-  
-  getUser : async (req, res) => {
-    const { id } = req.params;
-  
-    try {
-      const users = await connection('SELECT * FROM users WHERE id = ?', [id]);
+      const connection = await getConnection();
+      const users = await connection.query('SELECT * FROM users WHERE id = ?', [id]);
       if (users.length === 0) {
         return res.status(404).send('User not found');
       }
@@ -40,35 +27,34 @@ module.exports = {
     } catch (err) {
       res.status(500).send(err.message);
     }
-  },
-  
-  updateUser : async (req, res) => {
-    const { id } = req.params;
-    const { name, email, age } = req.body;
-  
-    try {
-      const result = await connection('UPDATE users SET name = ?, email = ?, age = ? WHERE id = ?', [name, email, age, id]);
-      if (result.affectedRows === 0) {
-        return res.status(404).send('User not found');
-      }
-      const user = { id, name, email, age };
-      res.send(user);
-    } catch (err) {
-      res.status(500).send(err.message);
+};
+
+const createUser = async (req, res) => {
+  try {
+
+    const { name, email } = req.body;
+    const pwd = req.body.password;
+    if (name === undefined || email === undefined || pwd === undefined){
+      res.status(400).json({ message: 'Bad Request. Please fill all fields.' })
     }
-  },
-  
-  deleteUser : async (req, res) => {
-    const { id } = req.params;
-  
-    try {
-      const result = await connection('DELETE FROM users WHERE id = ?', [id]);
-      if (result.affectedRows === 0) {
-        return res.status(404).send('User not found');
-      }
-      res.send('User deleted');
-    } catch (err) {
-      res.status(500).send(err.message);
+    const password = await bcrypt.hash(pwd, 8);
+    const user = { name, email, password }
+
+    const connection = await getConnection();
+    const result = await connection.query('INSERT INTO users SET ?', user)
+
+    if(result){
+      res.json({ succes: true, id: result.insertId, name, email });
     }
-  },
-}
+
+  } catch (error) {
+    res.status(500).send(error.message);
+  };
+
+};
+
+export const methods = {
+  getUsers,
+  getUser,
+  createUser
+};
