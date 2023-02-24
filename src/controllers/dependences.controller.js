@@ -1,9 +1,9 @@
-import {getConnection} from "../database/database"
+import { getConnection } from '../database/database';
 
 const getDependences = async (req, res) => {
     try {
         const connection = await getConnection();
-        const [result] = await connection.query("SELECT * from dependences");        
+        const [result] = await connection.query('SELECT * from dependences');        
         res.json(result);
 
     } catch (error) {
@@ -16,12 +16,12 @@ const getDependence = async (req, res) => {
         const {id} = req.params;
 
         const connection = await getConnection();
-        const [result] = await connection.query("SELECT * from dependences WHERE dep_id = ?", id); 
+        const [result] = await connection.query('SELECT * from dependences WHERE dep_id = ?', id); 
 
         if (result.length > 0) return res.json(result[0]);
         res.status(404).json({
             success: false,
-            message: "dependence not found."
+            message: 'dependence not found.'
         });              
         
     } catch (error) {
@@ -35,21 +35,21 @@ const createDependence = async (req, res)=>{
         const descrip = req.body;  
 
         if ( descrip === undefined){
-            res.status(400).json({message: "Bad Resquest. Please fill all field."})
+            res.status(400).json({message: 'Bad Resquest. Please fill all field.'})
         };
 
         const connection = await getConnection();
-        const [result] = await connection.query("INSERT INTO dependences SET ?", descrip);
+        const [result] = await connection.query('INSERT INTO dependences SET ?', descrip);
         
         
         if (result.affectedRows >= 1) return res.json({
             success: true,
-            message: "dependence added.",
+            message: 'dependence added.',
             id: result.insertId
         });        
         res.json({
             success: false,
-            message: "dependence not created."
+            message: 'dependence not created.'
         });    
         
     } catch (error) {
@@ -64,20 +64,20 @@ const updateDependence = async (req, res)=>{
         const descrip = req.body;
 
         if ( descrip === undefined || id === undefined){
-            res.status(400).json({message: "Bad Resquest. Please fill all field."})
+            res.status(400).json({message: 'Bad Resquest. Please fill all field.'})
         };
 
         const connection = await getConnection();               
-        const [result] = await connection.query("UPDATE dependences SET ? WHERE dep_id = ?", [descrip, id]);
+        const [result] = await connection.query('UPDATE dependences SET ? WHERE dep_id = ?', [descrip, id]);
 
         if (result.affectedRows >= 1) return res.json({                
             success: true,
-            message: "dependence update.",
+            message: 'dependence update.',
             id: id
         });        
         res.status(404).json({
             success: false,
-            message: "dependence not found."
+            message: 'dependence not found.'
         });
 
     } catch (error) {
@@ -91,7 +91,7 @@ const deleteDependence = async (req, res)=>{
         const {id} = req.params;
 
         const connection = await getConnection();
-        const [result] = await connection.query("DELETE from dependences WHERE dep_id = ?", id);
+        const [result] = await connection.query('DELETE from dependences WHERE dep_id = ?', id);
 
         if (result.affectedRows >= 1) return res.json({
             success: true,
@@ -99,7 +99,7 @@ const deleteDependence = async (req, res)=>{
         });
         res.status(404).json({
             success: false,
-            message: "dependence not found."
+            message: 'dependence not found.'
         });
 
     } catch (error) {

@@ -1,10 +1,13 @@
 import {getConnection} from "../database/database"
 
-const getDrivers = async (req, res) => {
+const getDrivers = async (req, res) => {    
     try {
         const connection = await getConnection();
-        const [result] = await connection.query("SELECT * from drivers");             
-        res.json(result);
+        const [drivers] = await connection.query("SELECT * from drivers");
+        if (drivers.length === 0) {
+            return res.status(404).send('Drivers not found');
+        }             
+        res.json(drivers);
 
     } catch (error) {
         res.status(500);

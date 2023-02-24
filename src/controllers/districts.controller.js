@@ -1,9 +1,9 @@
-import {getConnection} from "../database/database"
+import { getConnection } from '../database/database';
 
 const getDistricts = async (req, res) => {
     try {
         const connection = await getConnection();
-        const [result] = await connection.query("SELECT * from districts");        
+        const [result] = await connection.query('SELECT * from districts');        
         res.json(result);
     } catch (error) {
         res.status(500);
@@ -15,12 +15,12 @@ const getDistrict = async (req, res) => {
         const {id} = req.params;
 
         const connection = await getConnection();
-        const [result] = await connection.query("SELECT * from districts WHERE district_id = ?", id);        
+        const [result] = await connection.query('SELECT * from districts WHERE district_id = ?', id);        
         
         if (result.length > 0) return res.json(result[0]);
         res.status(404).json({
             success: false,
-            message: "district not found."
+            message: 'district not found.'
         });
 
     } catch (error) {
@@ -36,21 +36,21 @@ const createDistrict = async (req, res)=>{
         if ( descrip === undefined || prov_id === undefined){
             res.status(400).json({
                 success: false,
-                message: "bad resquest. Please fill all field."})
+                message: 'bad resquest. Please fill all field.'})
         };
         const district = {descrip, prov_id};
 
         const connection = await getConnection();
-        const [result] = await connection.query("INSERT INTO districts SET ?", district);
+        const [result] = await connection.query('INSERT INTO districts SET ?', district);
         
         if (result.affectedRows >= 1) return res.json({
             success: true,
-            message: "district added.",
+            message: 'district added.',
             id: result.insertId
         });        
         res.json({
             success: false,
-            message: "district not created."
+            message: 'district not created.'
         });   
         
     } catch (error) {
@@ -67,22 +67,22 @@ const updateDistrict = async (req, res)=>{
         if (descrip === undefined || prov_id === undefined || id === undefined){
             res.status(400).json({
                 success: false,
-                message: "bad resquest. Please fill all field."})
+                message: 'bad resquest. Please fill all field.'})
         };
 
         const partido = {descrip, prov_id};
 
         const connection = await getConnection();                
-        const [result] = await connection.query("UPDATE districts SET ? WHERE district_id = ?", [partido, id]);
+        const [result] = await connection.query('UPDATE districts SET ? WHERE district_id = ?', [partido, id]);
 
         if (result.affectedRows >= 1) return res.json({                
             success: true,
-            message: "district update.",
+            message: 'district update.',
             id: id
         });        
         res.status(404).json({
             success: false,
-            message: "district not found."
+            message: 'district not found.'
         }); 
 
     } catch (error) {
@@ -96,7 +96,7 @@ const deleteDistrict = async (req, res)=>{
         const {id} = req.params;
 
         const connection = await getConnection();
-        const [result] = await connection.query("DELETE from districts WHERE district_id = ?", id); 
+        const [result] = await connection.query('DELETE from districts WHERE district_id = ?', id); 
 
         if (result.affectedRows >= 1) return res.json({
             success: true,
@@ -104,7 +104,7 @@ const deleteDistrict = async (req, res)=>{
         });
         res.status(404).json({
             success: false,
-            message: "district not found."
+            message: 'district not found.'
         });
 
     } catch (error) {

@@ -25,13 +25,13 @@ app.use(express.json());
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api', authRoutes);
-app.use("/api/dependences", dependencesRoutes);
-app.use("/api/countries", countriesRoutes);
-app.use("/api/districts", districtsRoutes);
-app.use("/api/drivers", driversRoutes);
-app.use("/api/locations", locationsRoutes);
-app.use("/api/provinces", provincesRoutes);
-app.use("/api/situations", situationsRoutes);
-app.use("/api/types_docs", types_docsRoutes);
+app.use('/api/dependences', dependencesRoutes);
+app.use('/api/countries', countriesRoutes);
+app.use('/api/districts', districtsRoutes);
+app.use('/api/drivers', driversRoutes);
+app.use('/api/locations', locationsRoutes);
+app.use('/api/provinces', provincesRoutes);
+app.use('/api/situations', situationsRoutes);
+app.use('/api/types_docs', types_docsRoutes);
 
 export default app; 
